@@ -203,7 +203,9 @@
   "createdAt": "2025-08-18T04:56:44.179Z",
   "id": "fUxxxpWI663ZixV5",
   "isArchived": false,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Github backup",
   "nodes": [
     {
@@ -652,11 +654,12 @@
     },
     {
       "parameters": {
+        "authentication": "oAuth2",
         "select": "channel",
         "channelId": {
           "__rl": true,
-          "mode": "name",
-          "value": "#notifications"
+          "value": "#n8n",
+          "mode": "name"
         },
         "text": "=Information_source:  Starting Workflow Backup [{{ $execution.id }}]",
         "otherOptions": {
@@ -672,15 +675,21 @@
       ],
       "webhookId": "c02eb407-5547-4aa0-9ebf-46dab67b63b6",
       "typeVersion": 2.2,
-      "disabled": true
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "OIBG3eyTlco3cMhx",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
+        "authentication": "oAuth2",
         "select": "channel",
         "channelId": {
           "__rl": true,
-          "mode": "name",
-          "value": "#notifications"
+          "value": "#n8n",
+          "mode": "name"
         },
         "text": "=✅ Backup has completed - {{ $('Get Workflows').all().length }} workflows have been processed.",
         "otherOptions": {}
@@ -695,7 +704,12 @@
       "webhookId": "a0c6e8c8-5d71-40fa-b02b-63a7ed5726c4",
       "executeOnce": true,
       "typeVersion": 2.2,
-      "disabled": true
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "OIBG3eyTlco3cMhx",
+          "name": "Slack account"
+        }
+      }
     },
     {
       "parameters": {
@@ -718,6 +732,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-18T05:27:55.000Z",
-  "versionId": "8e89e46d-d74b-4e28-b926-11d197a57e9c"
+  "updatedAt": "2025-08-18T06:19:55.000Z",
+  "versionId": "26e2b760-40cc-472f-bcfa-a404237df02b"
 }
