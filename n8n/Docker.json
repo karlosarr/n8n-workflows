@@ -1,0 +1,685 @@
+{
+  "active": false,
+  "connections": {
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Comapre Two Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pull n8n Image": {
+      "main": [
+        [
+          {
+            "node": "docker compose pull",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Notif1": {
+      "main": [
+        [
+          {
+            "node": "Comapre Two Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Default variable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Approve": {
+      "main": [
+        [
+          {
+            "node": "Pull n8n Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comapre Two Input": {
+      "main": [
+        [
+          {
+            "node": "Telegram Notif",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Approve",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docker compose up": {
+      "main": [
+        [
+          {
+            "node": "Telegram Notif1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Version String": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Github HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Version String",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docker compose pull": {
+      "main": [
+        [
+          {
+            "node": "docker compose up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Default variable": {
+      "main": [
+        [
+          {
+            "node": "check n8n installed version",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Github HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check n8n installed version": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Default variable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-05-02T20:29:58.786Z",
+  "id": "QFrsvfIulylNoy3K",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Docker",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "docker pull docker.n8n.io/n8nio/n8n",
+        "cwd": "={{ $('Set Default variable').item.json['working-directory'] }}"
+      },
+      "id": "4af72c68-9264-4e84-9942-9d7a8886ce96",
+      "name": "Pull n8n Image",
+      "type": "n8n-nodes-base.ssh",
+      "position": [
+        360,
+        840
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "sshPassword": {
+          "id": "SRViX1034z3BBFUT",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "docker compose pull",
+        "cwd": "={{ $('Set Default variable').item.json['working-directory'] }}"
+      },
+      "id": "c9c6ea77-a790-456d-86ff-f58b04e27a64",
+      "name": "docker compose pull",
+      "type": "n8n-nodes-base.ssh",
+      "position": [
+        620,
+        840
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "sshPassword": {
+          "id": "SRViX1034z3BBFUT",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=docker inspect \"{{ $json['n8n-container-name'] }}\" | jq -r '.[0].Config.Labels[\"org.opencontainers.image.version\"]'",
+        "cwd": "={{ $json['working-directory'] }}"
+      },
+      "id": "16ad14fc-7f4b-4618-b958-9233f9a65bbc",
+      "name": "check n8n installed version",
+      "type": "n8n-nodes-base.ssh",
+      "position": [
+        -1040,
+        420
+      ],
+      "executeOnce": false,
+      "typeVersion": 1,
+      "alwaysOutputData": false,
+      "credentials": {
+        "sshPassword": {
+          "id": "SRViX1034z3BBFUT",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "129f5030-d0ba-4164-b401-78eacd92e873",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1740,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 3,
+              "triggerAtHour": 13
+            }
+          ]
+        }
+      },
+      "id": "56f49c1b-2400-40c7-986b-62f23772d329",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1740,
+        620
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Default Variables  \nBefore starting, please set the following variables:  \n\n- **working-directory**: The directory where your `docker-compose.yml` file is located.  \n- **n8n-container-name**: The name of your n8n Docker container.  \n- **telegram-id**: Your Telegram chat ID. You can find it by messaging `@get_id_bot` on Telegram.  \n",
+        "height": 500
+      },
+      "id": "f644d28c-3b9a-41a9-899e-57d7a1dd5120",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1480,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGet information from the n8n GitHub repository to find the latest released version of n8n.  \n",
+        "height": 300
+      },
+      "id": "5349c94f-c378-466e-87fb-a2f09a1b87cd",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1240,
+        840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\nThis node removes \"n8n@\" from the version string.  \nFor example:  \n- Before: `n8n@1.84.3`  \n- After: `1.84.3`  \n\n",
+        "height": 300
+      },
+      "id": "a91328ea-9f64-4a9d-a6e4-718be2087e5d",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -980,
+        840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Check Installed Image Version  \nExecute a command on the server to determine which version of n8n is currently running.  \n",
+        "height": 400
+      },
+      "id": "8e74ba4a-d70a-4318-b6db-99fdae18e6ca",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1100,
+        200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## SQL Query: Merging Inputs  \nThis query retrieves the `stdout` field from `input1` and `tag_name` from `input2`.  \nIt uses a `LEFT JOIN` to merge the data based on matching `id` fields.  \n\nQuery:  \n```sql\nSELECT input1.stdout AS stdout, \ninput2.tag_name AS tag_name\nFROM input1\nLEFT JOIN input2 ON input1.id = input2.id;\n",
+        "height": 520,
+        "width": 420
+      },
+      "id": "5c32eb42-e0ff-47fd-bc48-f1b32321177d",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -760,
+        200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Notificaton [OPTIONAL]\nSend a Telegram message and inform that there is nothing to do and n8n is already on the latest version.\n\n\n\n\n\n\n\n\n",
+        "height": 380
+      },
+      "id": "8a8acddd-223e-4cf9-bc60-9107a21beeb9",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Compare Versions  \nThis node compares two versions: one from Docker and another from the n8n GitHub repository.  \nIf a new version is available, it will be detected.  \n\n\n",
+        "height": 340
+      },
+      "id": "4e23fb8c-8299-448e-89de-bd8f4fcfa694",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Approve\nSend a Telegram notification and inform that a new version is available. Ask if the user wants to update.\n\n\n\n\n\n\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "bf218e7d-d2cd-4a4b-9cb1-3ac03ca990ba",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        20,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Pull Docker Image\nPull the latest n8n image. You can modify the command as needed.\n\n\n\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "2840c4e8-994c-493c-be6a-524f34a9e206",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        280,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Docker Compose Pull\nRuns in the directory you defined in the Default variable.\n\n\n\n\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "d2c1cf9a-7f67-46de-88a2-289a7753d099",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        560,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Docker Compose Up \nIn this step, the container will be started with the new image.\n\n\n\n\n\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "dcfcf63f-0429-43d6-9e56-be138b940d9f",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        840,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Notificaton\nSend a Telegram notification and inform that n8n has been updated.\n\n\n\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "111cd2fa-b29b-4cfc-965c-dee1742b4a62",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "docker compose up -d",
+        "cwd": "={{ $('Set Default variable').item.json['working-directory'] }}"
+      },
+      "id": "6c010dec-614c-475f-9bcc-d79ca5248087",
+      "name": "docker compose up",
+      "type": "n8n-nodes-base.ssh",
+      "position": [
+        900,
+        840
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "sshPassword": {
+          "id": "SRViX1034z3BBFUT",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Schedule Trigger  \nYou can schedule this workflow, for example, every three days to check n8n images.\n\n\n\n\n\n",
+        "height": 340
+      },
+      "id": "612876da-d8ed-4d04-971c-83d924dd31a5",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1780,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c06b2d24-1fd7-40f0-aee5-b5d6553e289e",
+              "name": "working-directory",
+              "type": "string",
+              "value": "/home/carlos/docker/plex-rpi"
+            },
+            {
+              "id": "451aad67-5190-4eab-a982-56092734bb07",
+              "name": "n8n-container-name",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "8a294900-f367-47a2-b260-344b133dc2ff",
+              "name": "telegram-id",
+              "type": "string",
+              "value": "1104168907"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc05ba3d-e98d-48b0-900e-8545a8fbe505",
+      "name": "Set Default variable",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1420,
+        760
+      ],
+      "typeVersion": 3.4,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/n8n-io/n8n/releases/latest",
+        "options": {}
+      },
+      "id": "9324bf61-0f39-4800-bab9-982e3bf97300",
+      "name": "Github HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1180,
+        860
+      ],
+      "typeVersion": 4.2,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT input1.stdout, input2.tag_name \nFROM input1 \nLEFT JOIN input2 ON true;"
+      },
+      "id": "7f249ff7-b234-4741-b4f0-5b50b7ec4a89",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        -600,
+        520
+      ],
+      "typeVersion": 3.1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f6e5cc51-aa49-46e5-aa4c-73baec811afa",
+              "name": "tag_name",
+              "type": "string",
+              "value": "={{ $json[\"tag_name\"].replace(\"n8n@\", \"\") }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e555437-95d4-433a-9400-764f3e191373",
+      "name": "Edit Version String",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -900,
+        860
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "e88d2c77-5ee1-4296-a612-d9b2290f6e03",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.stdout }}",
+              "rightValue": "={{ $json.tag_name }}"
+            }
+          ]
+        },
+        "looseTypeValidation": "=",
+        "options": {}
+      },
+      "id": "4f166809-1639-45ab-9733-f96730436377",
+      "name": "Comapre Two Input",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -260,
+        580
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+        "text": "n8n is up to date.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "843919c6-1fc7-48fa-8d23-b4ccf1c53bd9",
+      "name": "Telegram Notif",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        60,
+        220
+      ],
+      "webhookId": "38d19f3d-0ef4-40df-b831-701ea242bb8f",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+        "message": "Hi, \na new n8n version is available. \nI'm ready to update. \nCan I start now?",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "9d6f376a-e6b2-4611-8182-7ffc1e9ac2ae",
+      "name": "Telegram Approve",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        80,
+        840
+      ],
+      "webhookId": "e816696f-cb7a-4036-92bf-eafb5f06778c",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+        "text": "We are updating n8n to the latest version.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "77229e25-f60c-4c8d-8630-87fe1cadeac4",
+      "name": "Telegram Notif1",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1180,
+        840
+      ],
+      "webhookId": "254019a6-a298-4a9e-b100-8b92f22469c3",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2025-05-02T20:30:11.204Z",
+      "updatedAt": "2025-05-02T20:30:11.204Z",
+      "id": "c0FstqM49rApHMmC",
+      "name": "#n8n"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-25T01:12:36.000Z",
+  "versionId": "32053c13-da97-4c7c-8d6a-6511fc82c278"
+}
