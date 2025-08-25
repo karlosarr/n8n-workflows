@@ -313,7 +313,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         1328,
-        208
+        192
       ],
       "webhookId": "1dfc4103-7c23-4814-a0b5-dd4f5a96d36b",
       "typeVersion": 1,
@@ -736,6 +736,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-21T06:03:54.000Z",
-  "versionId": "26e2b760-40cc-472f-bcfa-a404237df02b"
+  "updatedAt": "2025-08-24T19:21:51.000Z",
+  "versionId": "de2a3901-dcc4-4f2c-bfbc-15a93f89a7e4"
 }
