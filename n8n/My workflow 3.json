@@ -1,0 +1,213 @@
+{
+  "active": false,
+  "connections": {
+    "Send Telegram Message": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find documents in MongoDB": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-14T04:23:06.507Z",
+  "id": "T7jS73Zg9rkLhrFR",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "84e56b9c-9ad9-4a3b-b506-64dfe08c3f79",
+      "webhookId": "29625313-c4ec-42d3-a3bc-0a46910ef599",
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Google Gemini",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        480,
+        416
+      ],
+      "id": "cfc62d6e-4eba-479e-8ab6-5cfe2c874ba5",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "chatId": "{{$node[\"Telegram Trigger\"].json.message.chat.id}}",
+        "text": "Pokémon de tipo *{{$node[\"Google Gemini\"].json.output}}* encontrados:\n\n{{$node[\"MongoDB\"].json.map(p => `- ${p.name}`).join('\\n')}}",
+        "additionalFields": {}
+      },
+      "name": "Send Telegram Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -112
+      ],
+      "id": "099574b4-b59e-4b86-8ce4-430b09f22bf6",
+      "webhookId": "efdabbb3-89cf-4712-8bc2-d2d9122b4460",
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "De la siguiente frase, extrae solamente el tipo de Pokémon mencionado y responde con una sola palabra (por ejemplo: Fuego, Agua, Eléctrico, etc.): \\\"{{$json.message.text}}\\\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        -128
+      ],
+      "id": "4d6be610-bf9d-445b-bc88-ba6ebbab5da1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        144
+      ],
+      "id": "a0a8712e-c0a2-4d8a-b100-45ef24d19255",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bqQEfUn2F2rNgmbS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseName": "model"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
+      "typeVersion": 1,
+      "position": [
+        608,
+        144
+      ],
+      "id": "84f5fa5e-58e6-49be-83b3-7efab9444462",
+      "name": "MongoDB Chat Memory",
+      "credentials": {
+        "mongoDb": {
+          "id": "BnGVpEkccvc6ypKL",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "={{ $fromAI('Collection', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        848,
+        112
+      ],
+      "id": "03dd7ecc-ac0f-4f4a-9035-bbe4d20d7fed",
+      "name": "Find documents in MongoDB",
+      "credentials": {
+        "mongoDb": {
+          "id": "Dquk6qU1mXON8Aw9",
+          "name": "MongoDB account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-25T01:12:29.000Z",
+  "versionId": "ce398d82-405d-43ec-a197-60e0618d8042"
+}
