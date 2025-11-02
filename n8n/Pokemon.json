@@ -44,6 +44,28 @@
           }
         ]
       ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item List Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-04-30T19:59:54.178Z",
@@ -134,6 +156,7 @@
     },
     {
       "parameters": {
+        "modelName": "models/gemini-2.5-pro",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -153,15 +176,15 @@
     },
     {
       "parameters": {
-        "collection": "={{ $fromAI('Collection', ``, 'string') }}",
+        "collection": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Collection', ``, 'string') }}",
         "options": {},
-        "query": "={{ $fromAI('Query__JSON_Format_', ``, 'json') }}"
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query__JSON_Format_', ``, 'json') }}"
       },
       "type": "n8n-nodes-base.mongoDbTool",
       "typeVersion": 1.1,
       "position": [
-        672,
-        144
+        464,
+        224
       ],
       "id": "3da4255c-a5db-4f44-b310-928a48d1ad5c",
       "name": "Execute No-SQL query",
@@ -179,8 +202,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
       "typeVersion": 1,
       "position": [
-        320,
-        192
+        352,
+        224
       ],
       "id": "601d6cdf-c787-4ac6-81e3-80aaaa09f891",
       "name": "MongoDB Chat Memory",
@@ -195,7 +218,7 @@
       "parameters": {
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "Eres un asistente experto en bases de datos MongoDB, especializado en la base de datos \"pokemon\" y la colección \"pokemons\". Tu única función es recibir preguntas en lenguaje natural y traducirlas a consultas No-SQL para esta colección específica.\n\n### Instrucciones\n1.  **Analiza la pregunta del usuario** para entender qué información necesita.\n2.  **Genera el objeto JSON con los parámetros** necesarios para la consulta.\n3.  **Llama siempre a la herramienta `Execute No-SQL query`** usando el JSON que generaste. Nunca respondas directamente al usuario.\n\n### Herramienta Disponible\n-   **Execute No-SQL query**: Ejecuta una consulta en la colección `pokemons`. Acepta un objeto JSON con los siguientes parámetros:\n    -   `query` (objeto, opcional): El filtro de la consulta. Ejemplo: `{\"type\": \"fire\"}`.\n    -   `projection` (objeto, opcional): Define qué campos devolver. Ejemplo: `{\"name\": 1, \"type\": 1, \"_id\": 0}`.\n    -   `sort` (objeto, opcional): Define el orden de los resultados. Ejemplo: `{\"stats.attack\": -1}`.\n    -   `limit` (número, opcional): Limita el número de documentos devueltos. Ejemplo: `5`.\n\n### Formato de Salida Requerido (MUY IMPORTANTE)\nTu única salida debe ser la llamada a la herramienta con el JSON correctamente estructurado. Si un parámetro como `sort` o `limit` no es necesario, omítelo del objeto.\n\n**Ejemplo de llamada a la herramienta:**\nSi el usuario pide \"los 3 pokemons de tipo agua más rápidos\", tu llamada a la herramienta debe usar este input:\n{\n  \"query\": {\"type\": \"water\"},\n  \"sort\": {\"stats.speed\": -1},\n  \"limit\": 3\n}"
+          "systemMessage": "Eres un asistente experto en N8N y MongoDB. Tu única función es convertir una pregunta del usuario sobre Pokémon en un filtro JSON válido para una operación \"Find\" de MongoDB.\n\nLa colección de Pokémon tiene la siguiente estructura de campos relevantes para la búsqueda:\n- `name`: (String) El nombre del Pokémon. Ejemplo: \"Bulbasaur\"\n- `id`: (String) El ID del Pokémon. Ejemplo: \"001\"\n\nReglas de conversión:\n1.  Si el usuario pregunta por un **nombre** (ej. \"Bulbasaur\", \"quién es pikachu\", \"info de charmander\"), genera un filtro de búsqueda por el campo `name`. Debes usar una expresión regular (`$regex`) con la opción `i` (`$options: \"i\"`) para que la búsqueda no distinga mayúsculas de minúsculas.\n2.  Si el usuario pregunta por un **ID** (ej. \"001\", \"el pokémon 25\", \"dame al 150\"), genera un filtro de búsqueda por el campo `id`.\n3.  Tu respuesta debe ser *únicamente* el objeto JSON del filtro. No incluyas texto explicativo, ni \"```json\", ni saludos, ni ningún otro texto.\n\nEjemplos:\n\nUsuario: \"Busca a Bulbasaur\"\nTu Respuesta:\n{\"name\": {\"$regex\": \"Bulbasaur\", \"$options\": \"i\"}}\n\nUsuario: \"Dame la información del pokémon con id 001\"\nTu Respuesta:\n{\"id\": \"001\"}\n\nUsuario: \"quién es pikachu\"\nTu Respuesta:\n{\"name\": {\"$regex\": \"pikachu\", \"$options\": \"i\"}}\n\nUsuario: \"el número 150\"\nTu Respuesta:\n{\"id\": \"150\"}\n\nUsuario: \"Charizard\"\nTu Respuesta:\n{\"name\": {\"$regex\": \"Charizard\", \"$options\": \"i\"}}\n\nAhora, procesa la siguiente entrada del usuario:"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -206,15 +229,51 @@
       ],
       "id": "e3aa4ec0-d194-4138-81ec-55075d2f6daa",
       "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -48
+      ],
+      "id": "84b4a324-658e-4a71-8ec9-c069dc1e72f5",
+      "name": "Respond to Chat"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserItemList",
+      "typeVersion": 1,
+      "position": [
+        576,
+        256
+      ],
+      "id": "6589a852-cb28-42ba-8e64-6fede60e2361",
+      "name": "Item List Output Parser"
     }
   ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "createdAt": "2025-04-30T19:59:54.183Z",
+      "updatedAt": "2025-04-30T19:59:54.183Z",
+      "role": "workflow:owner",
+      "workflowId": "PqeIhoq3SwAjIHLq",
+      "projectId": "Lv3MLaxzN78Feywb"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-25T01:12:39.000Z",
-  "versionId": "aeaa0aaa-8b91-437a-8885-9c6bc709e828"
+  "updatedAt": "2025-11-01T19:47:09.000Z",
+  "versionId": "99422253-075c-4f2a-90a8-a0f318ad8d4b"
 }
