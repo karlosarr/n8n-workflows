@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Merge Results": {
       "main": [
@@ -664,8 +664,18 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
   },
+  "shared": [
+    {
+      "updatedAt": "2025-05-02T20:29:58.800Z",
+      "createdAt": "2025-05-02T20:29:58.800Z",
+      "role": "workflow:owner",
+      "workflowId": "QFrsvfIulylNoy3K",
+      "projectId": "Lv3MLaxzN78Feywb"
+    }
+  ],
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": []
@@ -673,13 +683,13 @@
   },
   "tags": [
     {
-      "createdAt": "2025-05-02T20:30:11.204Z",
       "updatedAt": "2025-05-02T20:30:11.204Z",
+      "createdAt": "2025-05-02T20:30:11.204Z",
       "id": "c0FstqM49rApHMmC",
       "name": "#n8n"
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-08-25T01:12:36.000Z",
-  "versionId": "32053c13-da97-4c7c-8d6a-6511fc82c278"
+  "updatedAt": "2025-11-11T01:38:12.000Z",
+  "versionId": "fce1b869-af83-44ab-a4ee-f65bfca6506e"
 }
