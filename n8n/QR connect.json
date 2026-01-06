@@ -1,0 +1,560 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-01-05T21:01:18.000Z",
+    "createdAt": "2026-01-05T21:01:15.440Z",
+    "versionId": "5f5cf414-26ed-4762-b167-0563f3e2966b",
+    "workflowId": "dG1lXtHkzAdtsXJm",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 12
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          208,
+          -32
+        ],
+        "id": "dc74103e-e65a-4076-9341-efb09bf5c93c",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "command": "curl -s -o /dev/null -w \"%{http_code}\\n\" --location 'https://qrco.de/bbrB2X' --header 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 17_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/605.1' --header 'Cache-Control: no-cache, no-store, must-revalidate' --header 'Pragma: no-cache' --header 'Expires: 0'",
+          "cwd": "{{ $json['working-directory'] }}"
+        },
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          624,
+          0
+        ],
+        "id": "d4f8d823-1ee4-44f9-8b01-83bb1cee009c",
+        "name": "Analizar QR",
+        "alwaysOutputData": false,
+        "executeOnce": false,
+        "retryOnFail": false,
+        "credentials": {
+          "sshPassword": {
+            "id": "SRViX1034z3BBFUT",
+            "name": "SSH Password account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "combineBySql",
+          "query": "SELECT input1.stdout, input2 \nFROM input1 \nLEFT JOIN input2 ON true;",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          880,
+          16
+        ],
+        "id": "dd718a8d-a107-40b8-81f3-9ecfb6785753",
+        "name": "Merge"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          208,
+          112
+        ],
+        "id": "85d6e1b0-acbe-4da3-b000-aeb9016feab3",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "9c02a89d-a430-46ed-995d-667dbbe86d9a",
+                "leftValue": "={{ $json.stdout }}",
+                "rightValue": "200",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1088,
+          16
+        ],
+        "id": "faec6b04-ef04-4d8f-a826-f0ed2ab540cf",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9d798d2b-cac8-4bcd-9b22-fcfc01155268",
+                "name": "telegram-id",
+                "value": "1104168907",
+                "type": "string"
+              },
+              {
+                "id": "8d257317-975d-4a2c-80d5-280eabe3d287",
+                "name": "working-directory",
+                "value": "/tmp",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          416,
+          32
+        ],
+        "id": "0ee78219-8e50-459f-b469-d07b7b9eb38f",
+        "name": "Set Default variable"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+          "text": "=Mensaje de QR {{ $json.stdout }}",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1296,
+          -64
+        ],
+        "id": "40cbf340-4688-412a-84ac-a9071318b628",
+        "name": "Send a text message1",
+        "webhookId": "dbeed627-bc83-44d7-83b4-e85a3aeb0fb3",
+        "credentials": {
+          "telegramApi": {
+            "id": "jH8DKgG67jUGt9vX",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+          "text": "Se encontró un problema en el QR",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1296,
+          112
+        ],
+        "id": "43253564-24aa-4ac8-a02d-9b3ea6f589cf",
+        "name": "Telegram Notification",
+        "webhookId": "eb818134-de47-4d36-b554-51f7bf94cdac",
+        "credentials": {
+          "telegramApi": {
+            "id": "jH8DKgG67jUGt9vX",
+            "name": "Telegram account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set Default variable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Analizar QR": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Set Default variable",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Send a text message1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Telegram Notification",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Default variable": {
+        "main": [
+          [
+            {
+              "node": "Analizar QR",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Carlos Ruiz",
+    "name": "Version 5f5cf414",
+    "description": "",
+    "autosaved": false
+  },
+  "activeVersionId": "5f5cf414-26ed-4762-b167-0563f3e2966b",
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Default variable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar QR": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Default variable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Default variable": {
+      "main": [
+        [
+          {
+            "node": "Analizar QR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-01-05T17:26:05.553Z",
+  "id": "dG1lXtHkzAdtsXJm",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "QR connect",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        -32
+      ],
+      "id": "dc74103e-e65a-4076-9341-efb09bf5c93c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "command": "curl -s -o /dev/null -w \"%{http_code}\\n\" --location 'https://qrco.de/bbrB2X' --header 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 17_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/605.1' --header 'Cache-Control: no-cache, no-store, must-revalidate' --header 'Pragma: no-cache' --header 'Expires: 0'",
+        "cwd": "{{ $json['working-directory'] }}"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "d4f8d823-1ee4-44f9-8b01-83bb1cee009c",
+      "name": "Analizar QR",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": false,
+      "credentials": {
+        "sshPassword": {
+          "id": "SRViX1034z3BBFUT",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT input1.stdout, input2 \nFROM input1 \nLEFT JOIN input2 ON true;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        880,
+        16
+      ],
+      "id": "dd718a8d-a107-40b8-81f3-9ecfb6785753",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        112
+      ],
+      "id": "85d6e1b0-acbe-4da3-b000-aeb9016feab3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9c02a89d-a430-46ed-995d-667dbbe86d9a",
+              "leftValue": "={{ $json.stdout }}",
+              "rightValue": "200",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1088,
+        16
+      ],
+      "id": "faec6b04-ef04-4d8f-a826-f0ed2ab540cf",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9d798d2b-cac8-4bcd-9b22-fcfc01155268",
+              "name": "telegram-id",
+              "value": "1104168907",
+              "type": "string"
+            },
+            {
+              "id": "8d257317-975d-4a2c-80d5-280eabe3d287",
+              "name": "working-directory",
+              "value": "/tmp",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        32
+      ],
+      "id": "0ee78219-8e50-459f-b469-d07b7b9eb38f",
+      "name": "Set Default variable"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+        "text": "=Mensaje de QR {{ $json.stdout }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1296,
+        -64
+      ],
+      "id": "40cbf340-4688-412a-84ac-a9071318b628",
+      "name": "Send a text message1",
+      "webhookId": "dbeed627-bc83-44d7-83b4-e85a3aeb0fb3",
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Default variable').item.json['telegram-id'] }}",
+        "text": "Se encontró un problema en el QR",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1296,
+        112
+      ],
+      "id": "43253564-24aa-4ac8-a02d-9b3ea6f589cf",
+      "name": "Telegram Notification",
+      "webhookId": "eb818134-de47-4d36-b554-51f7bf94cdac",
+      "credentials": {
+        "telegramApi": {
+          "id": "jH8DKgG67jUGt9vX",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 5,
+    "timezone": "America/Mexico_City",
+    "saveExecutionProgress": true,
+    "timeSavedPerExecution": 5
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-01-05T17:26:05.558Z",
+      "createdAt": "2026-01-05T17:26:05.558Z",
+      "role": "workflow:owner",
+      "workflowId": "dG1lXtHkzAdtsXJm",
+      "projectId": "Lv3MLaxzN78Feywb"
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-01-05T21:01:15.439Z",
+  "versionId": "5f5cf414-26ed-4762-b167-0563f3e2966b"
+}
