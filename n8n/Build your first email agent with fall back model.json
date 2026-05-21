@@ -870,11 +870,44 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gemma4:31b-cloud",
+          "mode": "list",
+          "cachedResultName": "gemma4:31b-cloud"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "te estoy mandando mensajes desde n8n."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        144,
+        144
+      ],
+      "id": "767e6003-c78d-4e79-aedb-e1984b74d962",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "ULhS3alID8FAZMvP",
+          "name": "Ollama account"
+        }
+      }
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "shared": [
     {
@@ -888,16 +921,18 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1770266292,
+        "lastTimeChecked": 1778779904,
         "possibleDuplicates": [
-          "19c2c17efe1f36de",
-          "19c2bbf9baf94754"
+          "19e278b84733867b",
+          "19e26aa1874525e2",
+          "19e10c8d6425841c",
+          "19dd64c636ea60f8"
         ]
       }
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-02-05T02:59:58.416Z",
-  "versionId": "55bea35f-9f93-4b5d-a52f-84df9cc11830"
+  "updatedAt": "2026-05-20T19:02:41.417Z",
+  "versionId": "5fb70f18-d860-4bb5-b4a5-4e9ac8a80b55"
 }
