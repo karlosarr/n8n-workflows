@@ -3,40 +3,45 @@
   "activeVersion": null,
   "activeVersionId": null,
   "connections": {},
-  "createdAt": "2025-12-24T01:12:39.025Z",
-  "id": "apW36W0AXisJeCUD",
+  "createdAt": "2026-05-22T02:43:31.936Z",
+  "id": "umngnANs8IKQwBQ9",
   "isArchived": false,
   "meta": null,
   "name": "My workflow 4",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "parameters": {
+        "workflowInputs": {
+          "values": []
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
       "position": [
         0,
         0
       ],
-      "id": "f0b98197-e512-41ca-9d80-9dda849ec39c",
-      "name": "When clicking ‘Execute workflow’"
+      "id": "d08a070e-073d-4655-815d-8b6bb7b74fa4",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "shared": [
     {
-      "updatedAt": "2025-12-24T01:12:39.133Z",
-      "createdAt": "2025-12-24T01:12:39.133Z",
+      "updatedAt": "2026-05-22T02:43:31.941Z",
+      "createdAt": "2026-05-22T02:43:31.941Z",
       "role": "workflow:owner",
-      "workflowId": "apW36W0AXisJeCUD",
+      "workflowId": "umngnANs8IKQwBQ9",
       "projectId": "Lv3MLaxzN78Feywb"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-12-24T01:12:39.025Z",
-  "versionId": "96d850a5-42f0-4458-9a2a-905122527fc3"
+  "updatedAt": "2026-05-22T03:08:25.746Z",
+  "versionId": "493a86c9-0932-4f7d-9c21-60d8dcb170a3"
 }
