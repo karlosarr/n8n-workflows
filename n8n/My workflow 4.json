@@ -10,19 +10,16 @@
   "name": "My workflow 4",
   "nodes": [
     {
-      "parameters": {
-        "workflowInputs": {
-          "values": []
-        }
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
+      "parameters": {},
+      "type": "@mookielianhd/n8n-nodes-instagram.instagramTrigger",
+      "typeVersion": 2,
       "position": [
         0,
         0
       ],
-      "id": "d08a070e-073d-4655-815d-8b6bb7b74fa4",
-      "name": "When Executed by Another Workflow"
+      "id": "6be67437-3609-40e3-9c33-c1d44346bdef",
+      "name": "Instagram Trigger",
+      "webhookId": "523205ff-3cd0-4a07-99b8-afb67e9193e5"
     }
   ],
   "pinData": {},
@@ -42,6 +39,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-22T03:08:25.746Z",
-  "versionId": "493a86c9-0932-4f7d-9c21-60d8dcb170a3"
+  "updatedAt": "2026-05-26T00:18:41.013Z",
+  "versionId": "50d5d04e-bcbd-4332-af98-068b490b8717"
 }
